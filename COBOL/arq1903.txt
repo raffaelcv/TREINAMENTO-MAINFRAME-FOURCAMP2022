@@ -1,0 +1,177 @@
+      *====================================================             00010000
+       IDENTIFICATION                           DIVISION.               00020000
+      *====================================================             00030000
+       PROGRAM-ID. ARQ1901.                                             00040000
+                                                                        00041000
+      *====================================================             00042000
+      *  AUTOR: RAFAEL                                                  00043000
+      * EMPRESA: FOURSYS                                                00044000
+      *====================================================             00045000
+      *                                                                 00045100
+      * OBJETIVO: LENDO ARQUIVO E DANDO OPCAO VIA SYSIN                 00045212
+      *   PARA MOSTRAR DISPLAY COMPLETO OU SIMPLIFICADO.                00045312
+      *                                                                 00045412
+      *====================================================             00045500
+                                                                        00045600
+      *====================================================             00045700
+       ENVIRONMENT                              DIVISION.               00045800
+      *====================================================             00045900
+       CONFIGURATION                            SECTION.                00046000
+       SPECIAL-NAMES.                                                   00046100
+           DECIMAL-POINT IS COMMA.                                      00046200
+                                                                        00046300
+                                                                        00046400
+       INPUT-OUTPUT                             SECTION.                00046500
+       FILE-CONTROL.                                                    00046600
+           SELECT CLIENTES ASSIGN TO CLIENTES                           00046700
+               FILE STATUS IS WRK-FS-CLIENTES.                          00046800
+                                                                        00046900
+      *====================================================             00047000
+       DATA                                     DIVISION.               00047100
+      *====================================================             00047200
+       FILE                                     SECTION.                00047300
+       FD CLIENTES                                                      00047400
+           RECORDING MODE IS F                                          00047500
+           BLOCK CONTAINS 0 RECORDS.                                    00047600
+      *-----------LRECL 48---------------------------------             00047700
+       01 FD-CLIENTES.                                                  00047800
+          05 FD-AGENCIA     PIC 9(04).                                  00047900
+          05 FD-CONTA       PIC X(05).                                  00048000
+          05 FD-NOME        PIC X(30).                                  00048100
+          05 FD-VALOR       PIC 9(06)V99.                               00048200
+          05 FD-TIPOP       PIC X(01).                                  00048300
+            88 FD-TIPOP-B   VALUE 'C' 'D'.                              00048400
+                                                                        00048500
+      *====================================================             00048600
+       WORKING-STORAGE                          SECTION.                00048700
+                                                                        00048800
+      *---VARIAVEL PARA MOSTRAR RELATORIO OU COMPLETO---                00048903
+                                                                        00049003
+       77 WRK-REL         PIC X(01) VALUE SPACES.                       00049107
+          88 WRK-REL-B    VALUE 'S'.                                    00049200
+      *-------------------------------------------------                00049303
+       77 WRK-MSG-OPEN    PIC X(30) VALUE ' STATUS OPEN '.              00049400
+       77 WRK-MSG-CLOSE   PIC X(30) VALUE ' STATUS CLOSE '.             00049500
+       77 WRK-MSG-READ    PIC X(30) VALUE ' STATUS READ '.              00049600
+       77 WRK-MSG         PIC X(30) VALUE SPACES.                       00049700
+       77 WRK-FS-CLIENTES PIC 9(02).                                    00049800
+                                                                        00049900
+      *------------MASCARAS--------------------------------             00050000
+                                                                        00050100
+       77 FD-VALOR-ED       PIC ZZZ.ZZ9,99.                             00050200
+      *====================================================             00050300
+       PROCEDURE                                DIVISION.               00050400
+      *====================================================             00050500
+                                                                        00050600
+      *----------------------------------------------------             00050700
+       0000-PRINCIPAL                           SECTION.                00050800
+      *----------------------------------------------------             00050900
+                                                                        00051000
+             PERFORM 1000-INICIALIZAR.                                  00051100
+             PERFORM 2000-PROCESSAR UNTIL WRK-FS-CLIENTES EQUAL 10.     00051201
+             PERFORM 3000-FINALIZAR.                                    00051300
+             STOP RUN.                                                  00051400
+                                                                        00051500
+      *----------------------------------------------------             00051600
+       1000-INICIALIZAR                         SECTION.                00051700
+      *----------------------------------------------------             00051800
+                                                                        00051900
+           OPEN INPUT CLIENTES.                                         00052000
+            MOVE WRK-MSG-OPEN TO WRK-MSG.                               00052100
+             PERFORM 4000-TESTAR-STATUS.                                00052200
+              EVALUATE WRK-FS-CLIENTES                                  00052304
+               WHEN 00                                                  00052404
+                ACCEPT WRK-REL                                          00052507
+                PERFORM 5000-TESTAR-VAZIO                               00052604
+               WHEN 35                                                  00052704
+                DISPLAY ' ARQUIVO NAO EXISTE '                          00052800
+                 STOP RUN                                               00052900
+               WHEN OTHER                                               00053004
+                DISPLAY ' OUTRO ERRO ' WRK-FS-CLIENTES                  00053104
+                 STOP RUN                                               00053205
+              END-EVALUATE.                                             00053304
+                                                                        00053400
+       1000-99-FIM.          EXIT.                                      00053500
+                                                                        00053600
+      *----------------------------------------------------             00053700
+       2000-PROCESSAR                           SECTION.                00053800
+      *----------------------------------------------------             00053900
+             EVALUATE WRK-REL                                           00054010
+              WHEN 'N'                                                  00054110
+               PERFORM 2100-DISPLAY-COMPLETO                            00054200
+             WHEN 'S'                                                   00054310
+               PERFORM 2200-DISPLAY-RELATORIO                           00054400
+             WHEN OTHER                                                 00054508
+               DISPLAY ' ESCOLHA O TIPO DE RELATORIO'                   00054608
+               STOP RUN                                                 00054711
+             END-EVALUATE.                                              00054808
+                PERFORM 5000-TESTAR-VAZIO.                              00054900
+       2000-99-FIM.          EXIT.                                      00055000
+                                                                        00055100
+      *----------------------------------------------------             00055200
+       2100-DISPLAY-COMPLETO                    SECTION.                00055300
+      *----------------------------------------------------             00055400
+                                                                        00055500
+              DISPLAY ' AGENCIA.........' FD-AGENCIA.                   00055600
+              DISPLAY ' CONTA...........' FD-CONTA.                     00055700
+              DISPLAY ' NOME............' FD-NOME.                      00055800
+               MOVE FD-VALOR TO FD-VALOR-ED.                            00055900
+                DISPLAY ' VALOR.......R$' FD-VALOR-ED.                  00056000
+               IF NOT FD-TIPOP-B                                        00056100
+                 DISPLAY ' TIPO OPERACAO...' ' OPERACAO INVALIDA '      00056200
+                 DISPLAY '---------------------------------------'      00056300
+               ELSE                                                     00056400
+                DISPLAY ' TIPO OPECARAO...' FD-TIPOP                    00056500
+                DISPLAY '---------------------------------------'       00056600
+               END-IF.                                                  00056700
+                                                                        00056800
+       2100-99-FIM.          EXIT.                                      00056900
+                                                                        00057000
+      *----------------------------------------------------             00057100
+       2200-DISPLAY-RELATORIO                   SECTION.                00057200
+      *----------------------------------------------------             00057300
+                                                                        00057400
+               DISPLAY 'AG:' FD-AGENCIA ' CC:' FD-CONTA ' NOME:'        00058000
+                    FD-NOME  ' R$:' FD-VALOR-ED ' TIPO OP:'             00059000
+                      FD-TIPOP.                                         00060000
+                                                                        00061000
+       2200-99-FIM.          EXIT.                                      00062000
+                                                                        00062100
+      *----------------------------------------------------             00062200
+       3000-FINALIZAR                           SECTION.                00062300
+      *----------------------------------------------------             00062400
+                                                                        00062500
+           CLOSE CLIENTES.                                              00062600
+            MOVE WRK-MSG-CLOSE TO WRK-MSG.                              00062700
+             PERFORM 4000-TESTAR-STATUS.                                00062800
+              DISPLAY '---FIM DO PROCESSAMENTO---'.                     00062900
+                                                                        00063000
+       3000-99-FIM.          EXIT.                                      00063100
+                                                                        00063200
+                                                                        00063300
+      *----------------------------------------------------             00063400
+       4000-TESTAR-STATUS                       SECTION.                00063500
+      *----------------------------------------------------             00063600
+                                                                        00063700
+              DISPLAY '---------------------------------------'.        00063800
+              DISPLAY WRK-MSG ': ' WRK-FS-CLIENTES.                     00063900
+              DISPLAY '---------------------------------------'.        00064000
+                                                                        00064100
+       4000-99-FIM.          EXIT.                                      00064200
+                                                                        00064300
+      *----------------------------------------------------             00064400
+       5000-TESTAR-VAZIO                        SECTION.                00064500
+      *----------------------------------------------------             00064600
+                                                                        00064700
+            READ CLIENTES.                                              00064800
+                IF WRK-FS-CLIENTES EQUAL 10                             00064901
+                   DISPLAY ' FINAL DO ARQUIVO '                         00065000
+                END-IF.                                                 00066000
+                                                                        00066100
+       5000-99-FIM.          EXIT.                                      00066200
+                                                                        00066300
+      *----------------------------------------------------             00066400
+       9000-TRATA-ERROS                         SECTION.                00066500
+      *----------------------------------------------------             00066600
+                                                                        00066700
+       9000-99-FIM.          EXIT.                                      00066800

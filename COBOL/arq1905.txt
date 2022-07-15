@@ -1,0 +1,179 @@
+      *====================================================             00010000
+       IDENTIFICATION                           DIVISION.               00020000
+      *====================================================             00030000
+       PROGRAM-ID. ARQ1904.                                             00040000
+                                                                        00041000
+      *====================================================             00042000
+      *  AUTOR: RAFAEL                                                  00043000
+      * EMPRESA: FOURSYS                                                00044000
+      *====================================================             00045000
+      *                                                                 00045100
+      * OBJETIVO: TESTANDO COMANDO INTO E VARIAVAEL 66                  00045206
+      *   NO EXERCICIO ANTERIOR.                                        00045306
+      *                                                                 00045406
+      *====================================================             00045500
+                                                                        00045600
+      *====================================================             00045700
+       ENVIRONMENT                              DIVISION.               00045800
+      *====================================================             00045900
+       CONFIGURATION                            SECTION.                00046000
+       SPECIAL-NAMES.                                                   00046100
+           DECIMAL-POINT IS COMMA.                                      00046200
+                                                                        00046300
+                                                                        00046400
+       INPUT-OUTPUT                             SECTION.                00046500
+       FILE-CONTROL.                                                    00046600
+           SELECT FUNC ASSIGN TO FUNC                                   00046700
+               FILE STATUS IS WRK-FS-FUNC.                              00046800
+                                                                        00046900
+      *====================================================             00047000
+       DATA                                     DIVISION.               00047100
+      *====================================================             00047200
+       FILE                                     SECTION.                00047300
+       FD FUNC                                                          00047400
+           RECORDING MODE IS F                                          00047500
+           BLOCK CONTAINS 0 RECORDS.                                    00047600
+      *-----------LRECL=37---------------------------------             00047700
+       01 FD-FUNC           PIC X(37).                                  00047800
+                                                                        00048300
+      *====================================================             00048400
+       WORKING-STORAGE                          SECTION.                00048500
+                                                                        00048600
+       01 WRK-FUNC.                                                     00048700
+          05 WRK-CODIGO      PIC 9(05).                                 00048800
+          05 WRK-NOME        PIC X(20).                                 00048900
+          05 WRK-CODCARG     PIC X(04).                                 00049000
+          05 WRK-SALARIO     PIC 9(08).                                 00049100
+                                                                        00049200
+       66 WRK-COD-NOME-CODCARG RENAMES WRK-CODIGO THRU WRK-CODCARG.     00049304
+                                                                        00049502
+      *----------VARIAVEIS DE FORMATACAO DE TEXTO----------             00049600
+                                                                        00049700
+       77 WRK-FIMPRO      PIC X(40) VALUE                               00049800
+                       '---FIM DO PROCESSAMENTO---'.                    00049900
+       77 WRK-FIMREL      PIC X(40) VALUE                               00050000
+                       '------------ FIM RELATORIO ------------'.       00050100
+       77 WRK-RELCLI      PIC X(40) VALUE                               00050200
+                       '-------- RELATORIO DE CLIENTES --------'.       00050300
+       77 WRK-TRACO       PIC X(40) VALUE ALL '-'.                      00050400
+       77 WRK-DISPLAY     PIC X(40) VALUE SPACES.                       00050500
+                                                                        00050600
+      *-------------VARIAVEIS DE ACUMULACAO----------------             00050700
+                                                                        00050800
+       77 WRK-ACUMSAL     PIC 9(08)    VALUE ZEROES.                    00050900
+       77 WRK-REGANALI    PIC 9(05)    VALUE ZEROES.                    00051000
+       77 WRK-REGLIDOS    PIC 9(05)    VALUE ZEROES.                    00051100
+                                                                        00051200
+      *-------------VARIAVEIS DE STATUS--------------------             00051300
+                                                                        00051400
+       77 WRK-MSG-OPEN    PIC X(30) VALUE ' STATUS OPEN '.              00051500
+       77 WRK-MSG-CLOSE   PIC X(30) VALUE ' STATUS CLOSE '.             00051600
+       77 WRK-MSG-READ    PIC X(30) VALUE ' STATUS READ '.              00051700
+       77 WRK-MSG         PIC X(30)    VALUE SPACES.                    00051800
+       77 WRK-FS-FUNC     PIC 9(02).                                    00051900
+                                                                        00052000
+      *-----------------MASCARA----------------------------             00052100
+                                                                        00052200
+       77 WRK-ACUMSAL-ED   PIC ZZZ.ZZ9,00.                              00052300
+                                                                        00052400
+      *====================================================             00052500
+       PROCEDURE                                DIVISION.               00052600
+      *====================================================             00052700
+                                                                        00052800
+      *----------------------------------------------------             00052900
+       0000-PRINCIPAL                           SECTION.                00053000
+      *----------------------------------------------------             00053100
+                                                                        00053200
+             PERFORM 1000-INICIALIZAR.                                  00053300
+             PERFORM 2000-PROCESSAR UNTIL WRK-FS-FUNC EQUAL 10.         00053400
+             PERFORM 3000-FINALIZAR.                                    00053500
+             STOP RUN.                                                  00053600
+                                                                        00053700
+      *----------------------------------------------------             00053800
+       1000-INICIALIZAR                         SECTION.                00053900
+      *----------------------------------------------------             00054000
+                                                                        00054100
+           OPEN INPUT FUNC.                                             00054200
+            MOVE WRK-MSG-OPEN TO WRK-MSG.                               00054300
+             PERFORM 4000-TESTAR-STATUS.                                00054400
+              DISPLAY WRK-RELCLI.                                       00054500
+              DISPLAY WRK-DISPLAY.                                      00054600
+              EVALUATE WRK-FS-FUNC                                      00054700
+               WHEN 00                                                  00054800
+                PERFORM 5000-TESTAR-VAZIO                               00054900
+                PERFORM 2000-PROCESSAR                                  00055000
+               WHEN 35                                                  00055100
+                DISPLAY ' ARQUIVO NAO EXISTE '                          00055200
+                 STOP RUN                                               00055300
+               WHEN OTHER                                               00055400
+                DISPLAY ' OUTRO ERRO ' WRK-FS-FUNC                      00055500
+                 STOP RUN                                               00055600
+              END-EVALUATE.                                             00055700
+                                                                        00055800
+       1000-99-FIM.          EXIT.                                      00055900
+                                                                        00056000
+      *----------------------------------------------------             00056100
+       2000-PROCESSAR                           SECTION.                00056200
+      *----------------------------------------------------             00056300
+                                                                        00056400
+      *        DISPLAY WRK-CODIGO WRK-NOME WRK-CODCARG.                 00056502
+               DISPLAY WRK-COD-NOME-CODCARG.                            00056602
+                 MOVE WRK-SALARIO TO WRK-ACUMSAL.                       00056701
+                 ADD 1 TO WRK-REGLIDOS.                                 00056800
+                  IF WRK-CODCARG EQUAL '0234'                           00056901
+                   ADD 1 TO WRK-REGANALI                                00057000
+                  END-IF.                                               00057100
+                  READ FUNC INTO WRK-FUNC.                              00057205
+      *           MOVE FD-FUNC TO WRK-FUNC.                             00057305
+       2000-99-FIM.          EXIT.                                      00057400
+                                                                        00057500
+                                                                        00057600
+      *----------------------------------------------------             00057700
+       3000-FINALIZAR                           SECTION.                00057800
+      *----------------------------------------------------             00057900
+                                                                        00058000
+           CLOSE FUNC.                                                  00058100
+            MOVE WRK-MSG-CLOSE TO WRK-MSG.                              00059000
+              DISPLAY WRK-DISPLAY.                                      00060000
+              DISPLAY WRK-TRACO.                                        00061000
+              DISPLAY WRK-DISPLAY.                                      00062000
+              DISPLAY ' TOTAL DE REGISTROS LIDOS: ' WRK-REGLIDOS.       00063000
+              DISPLAY ' TOTAL DE REGISTROS COM ANALISTA: ' WRK-REGANALI.00064000
+      *        MOVE WRK-ACUMSAL TO WRK-ACUMSAL-ED.                      00065000
+      *       DISPLAY ' TOTAL DE SALARIOS ACUMULADOS.R$: '              00066000
+      *                     WRK-ACUMSAL-ED.                             00067000
+              DISPLAY WRK-DISPLAY.                                      00068000
+              DISPLAY WRK-FIMREL.                                       00069000
+             PERFORM 4000-TESTAR-STATUS.                                00070000
+              DISPLAY WRK-FIMPRO.                                       00071000
+                                                                        00072000
+       3000-99-FIM.          EXIT.                                      00073000
+                                                                        00074000
+                                                                        00075000
+      *----------------------------------------------------             00076000
+       4000-TESTAR-STATUS                       SECTION.                00076100
+      *----------------------------------------------------             00076200
+                                                                        00076300
+              DISPLAY WRK-DISPLAY.                                      00076400
+              DISPLAY WRK-TRACO.                                        00076500
+              DISPLAY WRK-MSG ': ' WRK-FS-FUNC.                         00076600
+              DISPLAY WRK-TRACO.                                        00076700
+                                                                        00076800
+       4000-99-FIM.          EXIT.                                      00076900
+                                                                        00077000
+      *----------------------------------------------------             00077100
+       5000-TESTAR-VAZIO                        SECTION.                00077200
+      *----------------------------------------------------             00077300
+                                                                        00077400
+            READ FUNC.                                                  00077500
+                IF WRK-FS-FUNC EQUAL 10                                 00077600
+                   DISPLAY ' FINAL DO ARQUIVO '                         00077700
+                END-IF.                                                 00077800
+                                                                        00077900
+       5000-99-FIM.          EXIT.                                      00078000
+                                                                        00078100
+      *----------------------------------------------------             00078200
+       9000-TRATA-ERROS                         SECTION.                00078300
+      *----------------------------------------------------             00078400
+                                                                        00078500
+       9000-99-FIM.          EXIT.                                      00078600
