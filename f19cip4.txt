@@ -1,0 +1,156 @@
+      *===============================================================*
+       IDENTIFICATION                                        DIVISION.
+      *===============================================================*
+       PROGRAM-ID. F19CIP2.
+      *===============================================================*
+      *   AUTOR....:RAFAEL VIANA                                      *
+      *   ANALISTA.:IVAN PETRUCCI                  - INSTRUTOR        *
+      *   DATA ....:28/06/2022                                        *
+      *---------------------------------------------------------------*
+      *   OBJETIVO:PROGRAMA PARA CONSULTAR                            *
+      *    REGISTROS EM ARQUIVO (VSAM) EXECUTANDO NO CICS.            *
+      *     (SEM LOGICA DE PSEUDO CONVERSATION)                       *
+      *                                                               *
+      *---------------------------------------------------------------*
+      *   ARQUIVOS:                                                   *
+      *   DDNAME......                                                *
+      *    DDNAME              I/O                 INCLUDE/BOOK       *
+      *---------------------------------------------------------------*
+      *   MODULOS....:                             INCLUDE/BOOK       *
+      *===============================================================*
+
+      *===============================================================*
+       ENVIRONMENT                                            DIVISION.
+      *===============================================================*
+       CONFIGURATION                                           SECTION.
+       SPECIAL-NAMES.
+           DECIMAL-POINT IS COMMA.
+
+      *===============================================================*
+       DATA                                                   DIVISION.
+      *===============================================================*
+       WORKING-STORAGE SECTION.
+
+           COPY F19CIM1.
+           COPY DFHAID.
+
+       01 WRK-DADOS.
+          05 WRK-CHAVE        PIC X(05).
+          05 WRK-NOME         PIC X(30).
+          05 WRK-SETOR        PIC X(04).
+          05 WRK-SALARIO      PIC X(10).
+          05 WRK-DATAADM.
+             10 WRK-DATADIA   PIC X(02).
+             10 FILLER        PIC X(01) VALUE '-'.
+             10 WRK-DATAMES   PIC X(02).
+             10 FILLER        PIC X(01) VALUE '-'.
+             10 WRK-DATAANO   PIC X(04).
+          05 WRK-EMAIL        PIC X(40).
+
+       77 WK-RESP            PIC S9(04) COMP.
+      *77 WRK-MAPA           PIC S9(04) COMP.
+      *77 WRK-FLAG           PIC 9(01).
+
+      *===============================================================*
+       PROCEDURE                                 DIVISION.
+      *===============================================================*
+      *---------------------------------------------------------------*
+       0000-PRINCIPAL                                         SECTION.
+      *---------------------------------------------------------------*
+
+              PERFORM 1000-INICIALIZAR.
+              PERFORM 2000-PROCESSAR.
+              PERFORM 3000-FINALIZAR.
+
+               EXEC CICS
+                 RETURN TRANSID ('T192')
+               END-EXEC.
+
+       0000-99-FIM.                        EXIT.
+
+      *---------------------------------------------------------------*
+       1000-INICIALIZAR                                       SECTION.
+      *---------------------------------------------------------------*
+
+            EXEC CICS SEND
+               MAPSET('F19CIM1')
+               MAP('MAPA01')
+                ERASE
+               MAPONLY
+            END-EXEC.
+
+       1000-99-FIM.                        EXIT.
+
+      *---------------------------------------------------------------*
+       2000-PROCESSAR                                         SECTION.
+      *---------------------------------------------------------------*
+
+      *-----------RECEBE DADOS ---------------------------------------*
+
+                EXEC CICS RECEIVE
+                  MAPSET('F19CIM1')
+                  MAP('MAPA01')
+                  INTO(MAPA01I)
+                END-EXEC.
+
+             EVALUATE EIBAID
+             WHEN '"'
+               EXEC CICS
+                 RETURN TRANSID ('T191')
+               END-EXEC
+             WHEN ':'
+               EXEC CICS
+                 RETURN
+               END-EXEC
+      *-------------CONSULTA---------------------------------------
+             WHEN '5'
+                MOVE IDI TO WRK-CHAVE
+                EXEC CICS READ
+                    FILE('FUNC')
+                    RIDFLD(WRK-CHAVE)
+                    INTO(WRK-DADOS)
+                    RESP(WK-RESP)
+                END-EXEC
+
+              PERFORM 2200-VERIFICACAO-CONSULTA
+             END-EVALUATE.
+       2000-99-FIM.                        EXIT.
+      *---------------------------------------------------------------*
+       2200-VERIFICACAO-CONSULTA                              SECTION.
+      *---------------------------------------------------------------*
+              EVALUATE WK-RESP
+                WHEN DFHRESP(NORMAL)
+                 MOVE WRK-NOME       TO NOMEO
+                 MOVE WRK-SETOR      TO SETORO
+                 MOVE WRK-SALARIO    TO SALARIOO
+                 MOVE WRK-DATADIA    TO DATADIAO
+                 MOVE WRK-DATAMES    TO DATAMESO
+                 MOVE WRK-DATAANO    TO DATAANOO
+                 MOVE WRK-EMAIL      TO EMAILO
+                 IF WRK-SALARIO EQUAL ZEROES OR
+                                 WRK-SALARIO IS NOT NUMERIC
+                  MOVE
+                     'REGISTRO ENCONTRADO **INCONSISTENCIA NO SALARIO**'
+                                     TO MSGO
+                 ELSE
+                  MOVE 'REGISTRO ENCONTRADO     ' TO MSGO
+                 END-IF
+                WHEN DFHRESP(NOTFND)
+                 MOVE 'REGISTRO NAO ENCONTRADO ' TO MSGO
+                WHEN OTHER
+                 MOVE 'ERRO.:'                   TO MSGO
+                 MOVE WK-RESP                    TO MSGO(08:04)
+              END-EVALUATE.
+       2200-99-FIM.                        EXIT.
+      *---------------------------------------------------------------*
+       3000-FINALIZAR                                        SECTION.
+      *---------------------------------------------------------------*
+      *------------FIM DO PROGRAMA------------------------------------*
+
+              EXEC CICS SEND
+                 MAPSET('F19CIM1')
+                 MAP('MAPA01')
+                 DATAONLY
+                 FROM( MAPA01O )
+              END-EXEC.
+       3000-99-FIM.                        EXIT.

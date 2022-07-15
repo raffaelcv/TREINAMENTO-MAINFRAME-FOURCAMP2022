@@ -1,0 +1,111 @@
+                                                                        00000115
+ *--------------PRIMEIROS PASSOS COBOL--------------------------*       00000323
+                                                                        00000423
+ FR19CB01 = PRIMEIRO PROGRAMA ( DISPLAY)                                00000523
+ FR19CB02 = RECEBE 2 VARIAVEIS DA SYSIN E ESCREVE NA TELA               00000623
+ FR19CB03 = QUEBRANDO UMA VARIAVEL EM VARIAS PARTES                     00000723
+ FR19CB04 = APRENDENDO A USAR  (FILLER)                                 00000823
+ FR19CB05 = RECEBE A DATA DO SISTEMA E MOSTRA NO FORMATO INDICADO       00000923
+ FR19CB06 = RECEBE UMA VARIAVEL E REDEFINE.                             00001023
+ FR19CB07 = RECEBA DADOS E UTILIZA REDEFINES NA VARIAVEL                00001123
+                                                                        00001223
+ *------------OPERADORES ARITIMETICOS---------------------------*       00001323
+                                                                        00001423
+ FR19CB08=SOMANDO DUAS VARIAVEIS E ADD NA TERCEIRA VARIAVEL             00001523
+ FR19CB09=SOMANDO DUAS VARIAVEIS E ADD NA TERCEIRA                      00001623
+                      COM 1 INICIAL NA TERCEIRA                         00001723
+ FR19CB10=SOMANDO 3 VARIAVEIS E ADD NA 4 VARIAVEL (ACRESCENTANDO 10)    00001823
+ FR19CB11=SUBTRAINDO DESCONTO                                           00001923
+ FR19CB12=DIVISAO RETORNANDO ERRO ON SIZE                               00002023
+ FR19CB13=DIVISAO UTILIZADA MEDIA                                       00002123
+ FR19CB14=MULTIPLICACAO UTILIZANDO MASCARAS                             00002223
+ FR19CB15=CALCULANDO MEDIA COM COMANDO COMPUTE                          00002323
+ FR19CB16=UTILIZANDO COMANDO COMPUTE                                    00002423
+                                                                        00002523
+ *------------COMANDO IF EVALUATE UNTIL E OPERADORES LOGICOS---*        00002623
+                                                                        00002723
+ FR19CB17=USANDO O COMANDO IF                                           00002823
+ FR19CB18=IF COM OPERADORES LOGICOS                                     00002923
+ FR19CB19=IF COM OPERADORES LOGICOS + VARIAVEL PARA DECIDIR             00003023
+ FR19CB20=UTILIZANDO COMANDO EVALUATE COM IF                            00003123
+ FR19CB21=APLICANDO COMANDO EVALUATE PARA MEDIA                         00003223
+                                                                        00003323
+ *------------------VARIAVEL 88 E PERFORM---------------------*         00003423
+                                                                        00003523
+ FR19CB22=CONHECENDO A VARIAVEL 88                                      00003623
+ FR19CB23=TABUADA UTILIZANDO PERFORM                                    00003723
+ FR19CB24=CONHECENDO O COMANDO UNTIL RECEBENDO LAYOUT                   00003823
+                                E SOMANDO REGISTROS                     00003923
+ FR19CB25=TABUADA UTILIZANDO PERFORM '2'                                00004023
+ FR19CB26=CALCULANDO JUROS COMPOSTOS COM BASES NOS MESES                00004123
+                                                                        00004223
+                                                                        00004323
+ *--------------ABRINDO E GRAVANDO ARQUIVOS-------------------*         00004423
+                                                                        00004523
+ ARQ1901= LER UM ARQUIVO E MOSTRAR DISPLAY                              00004623
+ ARQ1902= LER ARQUIVO E DAR DISPLAY PARA RELATORIO SIMPLES              00004723
+ ARQ1903=LER ARQUIVO E DAR OPCAO VIA SYSIN PARA                         00004823
+                         DISPLAY COMPLETO OU SIMPLES                    00004923
+ ARQ1904= LER ARQUIVO E MOSTRAR RELATORIO COM TOT REG,                  00005023
+               TOT FUNC, E FUNC COM CARGOS DE ANALISTAS.                00005123
+ ARQ1905= TESTANDO COMANDO INTO E VARIAVEL 66 NO EXERCICIO 1904         00005223
+ ARQ1906= LER E GRAVAR ARQUIVOS MOSTRANDO ERROS NO LOGERROS             00005323
+ ARQ1907= LER TODOS REGISTROS DO ARQUIVO, CLASSIFICAR E                 00005423
+          SOMAR SALARIO POR SETOR, AO FINAL GERAR SOMA                  00005523
+           DE TODOS SALARIOS E GRAVAR EM UM ARQUIVO DE RELATORIO.       00005623
+                                                                        00005716
+ *----------------------------------------------------------------*     00005823
+ EXEM01 = FAZER LEITURA DE 1 REGISTRO DO ARQUIVO.                       00005917
+ EXEM02 = FAZER LEITURA DE TODOS REGISTROS DO ARQUIVO.                  00006017
+ *--------------DESAFIO 4 RELOGIOS BEEP JUNTOS----------*               00006123
+                                                                        00006217
+ EXEDESAF = DESAFIO PASSADO, 4 RELOGIOS COM HORARIOS DIFERENTES         00006317
+       EM QUAL HORARIO ELES VAO BEPAR JUNTOS.                           00006417
+                                                                        00007017
+ *---------------COBOL COM DB2-------------------------*                00233219
+                                                                        00233319
+ FR19DB01=LER UM REGISTRO DE UMA TABELA DB2                             00233419
+ FR19DB02=LER TODOS REGISTROS DE UMA TABELA DB2                         00233519
+ FR19DB03=INSERIR DADOS EM UMA TABELA DB2                               00233619
+ FR19DB04=APAGAR DADOS DE UMA TABELA DB2                                00233719
+ FR19DB05=UPDATE DE DADOS DE UMA TABELA DB2                             00233819
+ FR19DB06=LER TABELA DB2 E GERAR SAIDA CONSISTIDA EM UM ARQUIVO         00233919
+ FR19DB07=LER DUAS TABELAS E UTILIZAR O JOIN NO SETOR                   00234019
+ FR19DB08=LER TABELA FUNC E COMPARAR COM TABELA SETOR E                 00234119
+                       „EXIBIR RESULTADOS COM SETOR N O COMPATIVEL.     00234219
+ FR19DB09=LER UM REGISTRO DE UMA TABELA DB2 COM VERIFICACAO DO 'SQLWARN'00234319
+ FR19DB10=SYNCPOINT E RESTART                                           00234419
+                                                                        00234519
+ * -------------BALANCE LINES---------------------------------*         00234600
+                                                                        00234700
+ FR19EXX2=RASCUNHO DO EX02                                              00234819
+ FR19EX02=BALANCE LINES ENTRE AS CHAVES E GRAVAR EM UM ARQUIVO          00234919
+ FR19EX03=BALANCE LINES ENTRE AS CHAVES E GRAVAR EM UM ARQUIVO          00235019
+ FR19EX04=BALANCE LINES ENTRE AS CHAVES E GRAVAR EM DOIS ARQUIVOS       00236019
+                                                                        00237100
+                                                                        00341007
+ FR19JOIN=LER TABELA DE FUNCIONARIOS E TABELA DE BENEFICIOS,            00350007
+     FAZER O JOIN PARA COMPARAR FUNCIONARIOS COM BENEFICIOS             00360007
+       E GRAVAR EM UM ARQUIVO DE SAIDA FUNCIONARIOS QUE TENHAM          00370007
+       BENEFICIOS NO ARQUIVO (SRELBENE)                                 00380009
+                                                                        00390007
+ RELACLI=LER ARQUIVO DE SAIDA GERADO NO EXERCICIO FR19JOIN              00400008
+    E CRIAR UM ARQUIVO DE SAIDA DE RELATORIO (RELABENE) COM             00410009
+    QUEBRAS DE PAGINAS.                                                 00420008
+                                                                        00420119
+ RELBENE=LER ARQUIVO (SRELBENE) E CRIAR UM RELATORIO                    00420220
+                COM QUEBRA DE PAGINAS.                                  00421020
+ *--------------CICS -----------------------------------*               00430023
+                                                                        00431013
+ F19CIM1=CRIACAO DE UM MAPA(BMS) NO CICS                                00440024
+ F19CIP1=PROGRAMA PARA CONSULTAR, INSERIR E DELETAR                     00450024
+          REGISTROS EM TABELA DB2, EXECUTANDO NO CICS.                  00460024
+ *--------------UTILITARIOS-----------------------------*               00470023
+                                                                        00480020
+ GRAVALOG= PROGRAMA PARA GRAVACAO DE ERROS                              00490020
+           GERA UM RELATORIO COM NOME DO PROGRAMA, SECAO, MSG DE ERRO   00500021
+           STATUS DO ERRO, E DATA.                                      00501021
+ PROGDATA = PEGAR A DATA DO SISTEMA E MOSTRAR EM                        00502022
+                FORMATO LEGIVEL.                                        00503022
+ CHAMAMES = PROGRAMA PARA CHAMAR DATA COM CALL 'DEVOLMES'               00506022
+ DEVOLMES = CRIACAO DE UM PROGRAMA PARA MOSTRAR A DATA.                 00507022
