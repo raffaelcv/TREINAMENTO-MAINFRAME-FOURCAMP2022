@@ -1,0 +1,304 @@
+      *=============================================================*   00001000
+       IDENTIFICATION                            DIVISION.              00002000
+      *=============================================================*   00003000
+                                                                        00004000
+       PROGRAM-ID. MD021903.                                            00005019
+                                                                        00006000
+      *=============================================================*   00007000
+      *   AUTOR....:RAFAEL VIANA                                    *   00007100
+      *   ANALISTA.:IVAN PETRUCCI                  - INSTRUTOR      *   00007200
+      *   DATA ....:06/07/2022                                      *   00007300
+      *-------------------------------------------------------------*   00007400
+      * VERSAO   DATA       AUTOR     DESCRICAO DA MODIFICACAO      *   00007500
+      *  1.0   06/07/22  RAFAEL VIANA     VERSAO INICIAL            *   00007600
+      *-------------------------------------------------------------*   00007700
+      *   OBJETIVO:UITLIZANDO COMANDO (START) NO ARQUIVO VSAM       *   00007801
+      *                               (EVSA0407).                   *   00007901
+      *                                                             *   00008000
+      *                                                             *   00008100
+      *-------------------------------------------------------------*   00008700
+      *                  A L T E R A C O E S                        *   00008800
+      *-------------------------------------------------------------*   00008901
+RAFALT* ANALISTA......:RAFAEL VIANA                     4SYS        *   00009017
+  .   * DATA..........:11/07/2022                                   *   00009137
+  .   *-------------------------------------------------------------*   00009217
+  .   * OBJETIVO......:GRAVANDO REGISTROS CONSISTENTES NO ARQUIVO   *   00009318
+  .   *               (SVSA1107) E REGISTROS INCONSISTENTES         *   00009418
+  .   *                SAO DESPREZADOS NA SYSOUT.                   *   00009518
+RAFALT*-------------------------------------------------------------*   00009619
+      *-------------------------------------------------------------*   00009734
+      *                  A L T E R A C O E S                        *   00009834
+      *-------------------------------------------------------------*   00009934
+RAFAL2* ANALISTA......:RAFAEL VIANA                     4SYS        *   00010034
+  .   * DATA..........:11/07/2022                                   *   00010137
+  .   *-------------------------------------------------------------*   00010234
+  .   * OBJETIVO......:CONSISTINDO ENTRADA DE DADOS DO (PARM)       *   00010334
+  .   *               PELO TAMANHO DE ENTRADA (18), CASO TAMANHO    *   00010434
+  .   *        DIFERENTE, EXIBE AS CHAVES DO (PARM) E FINALIZA.     *   00010534
+RAFAL2*-------------------------------------------------------------*   00010634
+      *   ARQUIVOS:                                                 *   00010719
+      *    DDNAME              I/O                  COPY/BOOK       *   00010819
+      *    EVSA0407             I                    FR19W047       *   00010936
+RAFALT*    SVSA1107             O                                   *   00011019
+      *-------------------------------------------------------------*   00011119
+      *=============================================================*   00011200
+                                                                        00011300
+      *=============================================================*   00011400
+       ENVIRONMENT                               DIVISION.              00011500
+      *=============================================================*   00011600
+                                                                        00011700
+      *=============================================================*   00011800
+       CONFIGURATION                               SECTION.             00011900
+      *=============================================================*   00012000
+       SPECIAL-NAMES.                                                   00012100
+           DECIMAL-POINT IS COMMA.                                      00012200
+      *-------------------------------------------------------------*   00012300
+       INPUT-OUTPUT                                 SECTION.            00012400
+       FILE-CONTROL.                                                    00012500
+           SELECT EVSA0407 ASSIGN TO EVSA0407                           00012600
+              ORGANIZATION IS INDEXED                                   00012700
+              ACCESS MODE  IS DYNAMIC                                   00012800
+              RECORD KEY   IS ARQ-CHAVE                                 00012900
+              FILE STATUS  IS FS-EVSA0407.                              00013000
+                                                                        00013117
+RAFALT     SELECT SVSA1107 ASSIGN TO SVSA1107                           00013217
+RAFALT        FILE STATUS IS FS-SVSA1107.                               00013317
+                                                                        00013400
+                                                                        00013500
+      *=============================================================*   00013600
+       DATA                                      DIVISION.              00013700
+      *=============================================================*   00013800
+       FILE                                        SECTION.             00013900
+       FD EVSA0407.                                                     00014000
+      *-----------LRCL 19-------------------------------------------*   00014100
+       COPY FR19W047.                                                   00014235
+                                                                        00014317
+      *-------------------------------------------------------------*   00014417
+      *   ARQUIVO DE SAIDA CONSISTIDA (LRECL 19)                    *   00014519
+      *-------------------------------------------------------------*   00014619
+RAFALT FD SVSA1107                                                      00014722
+  .        RECORDING MODE IS F                                          00014819
+  .        BLOCK CONTAINS 0 RECORDS.                                    00014919
+  .                                                                     00015019
+RAFALT 01 FD-SVSA1107-SAIDA      PIC X(19).                             00015119
+                                                                        00015219
+      *=============================================================*   00015319
+       WORKING-STORAGE                             SECTION.             00015419
+      *=============================================================*   00015519
+       01 WRK-EVSA0407.                                                 00015619
+          05 WRK-CHAVE.                                                 00015719
+             10 WRK-AGENCIA       PIC X(04).                            00015819
+             10 WRK-CONTA         PIC X(05).                            00015919
+          05 WRK-SALARIO          PIC X(10).                            00016019
+                                                                        00016119
+       77 WRK-SAIDA-REGISTRO      PIC X(19).                            00016219
+                                                                        00016319
+      *-------------------------------------------------------------*   00016400
+       01 FILLER          PIC X(70) VALUE                               00017000
+           '---------MENSAGENS DE ERRO----------------------'.          00018000
+      *-------------------------------------------------------------*   00019000
+                                                                        00020001
+       77 WRK-MSGERRO      PIC X(30).                                   00021002
+       77 WRK-CODIGOERRO   PIC X(30).                                   00022002
+       77 WRK-MSGOPEN      PIC X(21) VALUE 'ERRO NO OPEN EVSA0407'.     00022102
+RAFALT 77 WRK-MSGOPENS     PIC X(21) VALUE 'ERRO NO OPEN SVSA1107'.     00022219
+RAFALT 77 WRK-MSGCLOSES    PIC X(22) VALUE 'ERRO NO CLOSE SVSA1107'.    00022319
+       77 WRK-MSGCLOSE     PIC X(22) VALUE 'ERRO NO CLOSE EVSA0407'.    00022419
+RAFAL2 77 WRK-MSGCHAVEN    PIC X(20) VALUE 'CHAVE NAO ENCONTRADA'.      00022534
+  .    77 WRK-MSGCHAVE1    PIC X(20) VALUE 'CHAVE INICIO........'.      00022634
+RAFAL2 77 WRK-MSGCHAVE2    PIC X(20) VALUE 'CHAVE FIM...........'.      00022734
+       77 WRK-MSGREGD      PIC X(20) VALUE 'REGISTRO DESPREZADO:'.      00022832
+       77 WRK-MSGCODIGO    PIC X(12) VALUE 'CODIGO VSAM:'.              00022932
+RAFAL2 77 WRK-MSGCHAVE     PIC X(12) VALUE 'CHAVE ERRO.:'.              00023034
+       77 WRK-MSGSEPARA    PIC X(37) VALUE ALL '-'.                     00023132
+                                                                        00023232
+RAFALT*-------------------------------------------------------------*   00023332
+  .    01 FILLER          PIC X(70) VALUE                               00023432
+  .        '---------CONTADORES-----------------------------'.          00023532
+RAFALT*-------------------------------------------------------------*   00023632
+                                                                        00023732
+       77 WRK-CONTREG      PIC 9(03).                                   00023832
+RAFALT 77 WRK-CONTREGD     PIC 9(03).                                   00023932
+RAFALT 77 WRK-CONTREGW     PIC 9(03).                                   00024032
+                                                                        00024132
+      *-------------------------------------------------------------*   00024232
+       01 FILLER          PIC X(70) VALUE                               00024332
+           '---------MENSAGENS DO SISTEMA-------------------'.          00025000
+      *-------------------------------------------------------------*   00025100
+                                                                        00025226
+       77 WRK-MSGREGLI     PIC X(32) VALUE                              00025326
+                           'TOTAL DE REGISTROS LIDOS......: '.          00025426
+       77 WRK-MSGREGGRAV   PIC X(32) VALUE                              00025526
+                           'TOTAL DE REGISTROS GRAVADOS...: '.          00025626
+       77 WRK-MSGREGDESP   PIC X(32) VALUE                              00025726
+                           'TOTAL DE REGISTROS DESPREZADOS: '.          00025826
+       77 WRK-MSGCHAVEIN   PIC X(27) VALUE                              00025930
+                           'TAMANHO DE CHAVE INCORRETO '.               00026030
+      *-------------------------------------------------------------*   00027900
+       01 FILLER          PIC X(70) VALUE                               00028000
+           '---------MASCARA E APOIO------------------------'.          00028100
+      *-------------------------------------------------------------*   00028200
+                                                                        00028300
+       77 WRK-LEN-ED      PIC Z99.                                      00028400
+                                                                        00028500
+      *-------------------------------------------------------------*   00028601
+       01 FILLER          PIC X(70) VALUE                               00028701
+           '---------VARIAVEIS DE STATUS--------------------'.          00028801
+      *-------------------------------------------------------------*   00028901
+                                                                        00029001
+       77 FS-EVSA0407      PIC 9(02).                                   00029101
+       77 FS-SVSA1107      PIC 9(02).                                   00029217
+                                                                        00029317
+      *=============================================================*   00029417
+       LINKAGE                                  SECTION.                00029517
+      *=============================================================*   00029617
+       01 LNK-ENTRADA.                                                  00029717
+          05 LNK-LEN            PIC 9(04) COMP.                         00029817
+          05 LNK-CORPO.                                                 00029917
+             10 LNK-CHAVE.                                              00030017
+                15 LNK-AGENCIA  PIC X(04).                              00030117
+                15 LNK-CONTA    PIC X(05).                              00030217
+             10 LNK-CHAVE2.                                             00030406
+                15 LNK-AGENCIA2  PIC X(04).                             00030506
+                15 LNK-CONTA2    PIC X(05).                             00030606
+                                                                        00030806
+      *=============================================================*   00030906
+       PROCEDURE DIVISION       USING LNK-ENTRADA.                      00031006
+      *=============================================================*   00031106
+                                                                        00031206
+      *-------------------------------------------------------------*   00031306
+       0000-PRINCIPAL                           SECTION.                00031406
+      *-------------------------------------------------------------*   00031506
+                                                                        00031606
+            PERFORM  1000-INICIAR.                                      00032000
+            PERFORM  2000-PROCESSAR.                                    00032102
+            PERFORM  3000-FINALIZAR.                                    00032600
+            GOBACK.                                                     00032700
+                                                                        00032800
+                                                                        00032900
+      *-------------------------------------------------------------*   00033000
+       1000-INICIAR                             SECTION.                00033100
+      *-------------------------------------------------------------*   00033200
+            OPEN INPUT EVSA0407                                         00033319
+RAFALT          OUTPUT SVSA1107.                                        00033419
+            PERFORM 1100-TESTAR-STATUS.                                 00033500
+                                                                        00033600
+       1000-99-FIM.              EXIT.                                  00033700
+      *-------------------------------------------------------------*   00033800
+       1100-TESTAR-STATUS                       SECTION.                00033900
+      *-------------------------------------------------------------*   00034000
+            IF FS-EVSA0407 NOT EQUAL ZEROS                              00034100
+              MOVE WRK-MSGOPEN TO WRK-MSGERRO                           00034200
+              MOVE FS-EVSA0407 TO WRK-CODIGOERRO                        00034300
+              PERFORM 9100-TRATAERROS-SAIDA                             00034400
+            END-IF.                                                     00034500
+RAFALT      IF FS-SVSA1107 NOT EQUAL ZEROS                              00034619
+  .           MOVE WRK-MSGOPENS TO WRK-MSGERRO                          00034719
+  .           MOVE FS-SVSA1107  TO WRK-CODIGOERRO                       00034819
+  .           PERFORM 9100-TRATAERROS-SAIDA                             00034919
+RAFALT      END-IF.                                                     00035019
+                                                                        00035119
+       1100-99-FIM.              EXIT.                                  00035219
+                                                                        00035319
+      *-------------------------------------------------------------*   00035419
+       1400-TESTAR-CLOSE                        SECTION.                00035519
+      *-------------------------------------------------------------*   00035619
+            IF FS-EVSA0407 NOT EQUAL ZEROS                              00036000
+              MOVE WRK-MSGCLOSE  TO WRK-MSGERRO                         00036100
+              MOVE FS-EVSA0407   TO WRK-CODIGOERRO                      00036200
+              PERFORM 9000-TRATAERROS                                   00036300
+            END-IF.                                                     00036400
+RAFALT      IF FS-SVSA1107 NOT EQUAL ZEROS                              00036519
+  .           MOVE WRK-MSGCLOSES TO WRK-MSGERRO                         00036619
+  .           MOVE FS-SVSA1107   TO WRK-CODIGOERRO                      00036719
+  .           PERFORM 9000-TRATAERROS                                   00036819
+RAFALT      END-IF.                                                     00036919
+                                                                        00037019
+                                                                        00037119
+       1400-99-FIM.              EXIT.                                  00037219
+      *-------------------------------------------------------------*   00037319
+       2000-PROCESSAR                           SECTION.                00037419
+      *-------------------------------------------------------------*   00037519
+                                                                        00037619
+RAFAL2      IF LNK-LEN NOT EQUAL 18                                     00037734
+  .           MOVE WRK-MSGCHAVEIN TO WRK-MSGERRO                        00037830
+  .           MOVE WRK-MSGCHAVE   TO WRK-MSGCODIGO                      00037931
+  .           MOVE LNK-CORPO      TO WRK-CODIGOERRO                     00038030
+  .           PERFORM 9050-TRATAERROS-LEN                               00038232
+RAFAL2     ELSE                                                         00038334
+            MOVE LNK-CHAVE TO ARQ-CHAVE                                 00038430
+             START EVSA0407 KEY EQUAL ARQ-CHAVE                         00039003
+              INVALID KEY                                               00040002
+               DISPLAY WRK-MSGCHAVEN                                    00040125
+              NOT INVALID KEY                                           00040202
+               READ EVSA0407 NEXT                                       00040328
+             PERFORM  2200-LOOP-REGISTRO UNTIL FS-EVSA0407 EQUAL 10     00040428
+            END-IF.                                                     00040528
+                                                                        00040600
+       2000-99-FIM.              EXIT.                                  00040700
+      *-------------------------------------------------------------*   00046009
+       2200-LOOP-REGISTRO                        SECTION.               00047009
+      *-------------------------------------------------------------*   00048009
+                                                                        00048109
+              IF ARQ-CHAVE LESS OR EQUAL LNK-CHAVE2                     00048211
+               ADD 1 TO WRK-CONTREG                                     00048320
+                MOVE REG-EVSA0407 TO WRK-EVSA0407                       00048420
+RAFALT           IF ARQ-SALARIO EQUAL ZEROS OR ARQ-SALARIO              00048620
+  .                                            IS NOT NUMERIC           00048720
+  .                STRING ARQ-AGENCIA DELIMITED BY SIZE                 00048820
+  .                       ARQ-CONTA   DELIMITED BY SIZE                 00048920
+  .                       ARQ-SALARIO DELIMITED BY SIZE                 00049020
+  .                       INTO WRK-SAIDA-REGISTRO                       00049120
+  .                       ADD 1 TO WRK-CONTREGD                         00049220
+  .                     DISPLAY WRK-MSGREGD WRK-CONTREGD '='            00049325
+  .                                            WRK-SAIDA-REGISTRO       00049420
+  .              ELSE                                                   00049520
+  .                STRING ARQ-AGENCIA DELIMITED BY SIZE                 00049620
+  .                       ARQ-CONTA   DELIMITED BY SIZE                 00049720
+  .                       ARQ-SALARIO DELIMITED BY SIZE                 00049820
+  .                       INTO WRK-SAIDA-REGISTRO                       00049920
+  .                       ADD 1 TO WRK-CONTREGW                         00050020
+  .                WRITE FD-SVSA1107-SAIDA FROM WRK-SAIDA-REGISTRO      00050120
+RAFALT           END-IF                                                 00050220
+              END-IF.                                                   00050310
+               READ EVSA0407 NEXT.                                      00050410
+                                                                        00050509
+       2200-99-FIM.              EXIT.                                  00050609
+      *-------------------------------------------------------------*   00050700
+       3000-FINALIZAR                               SECTION.            00050800
+      *-------------------------------------------------------------*   00050900
+              CLOSE EVSA0407.                                           00051000
+RAFALT        CLOSE SVSA1107.                                           00051119
+              PERFORM 1400-TESTAR-CLOSE.                                00051200
+              DISPLAY WRK-MSGSEPARA.                                    00051315
+              DISPLAY WRK-MSGREGLI WRK-CONTREG.                         00051426
+RAFALT        DISPLAY WRK-MSGREGGRAV WRK-CONTREGW.                      00051526
+RAFALT        DISPLAY WRK-MSGREGDESP WRK-CONTREGD.                      00051626
+              DISPLAY WRK-MSGSEPARA.                                    00051720
+                                                                        00051820
+       3000-99-FIM.              EXIT.                                  00051920
+      *-------------------------------------------------------------*   00052020
+       9000-TRATAERROS                              SECTION.            00052120
+      *-------------------------------------------------------------*   00052220
+            DISPLAY WRK-MSGERRO.                                        00052320
+            DISPLAY WRK-MSGCODIGO WRK-CODIGOERRO.                       00052420
+                                                                        00052520
+       9000-99-FIM.              EXIT.                                  00052620
+RAFAL2*-------------------------------------------------------------*   00052734
+  .    9050-TRATAERROS-LEN                          SECTION.            00052834
+  .   *-------------------------------------------------------------*   00052934
+  .         DISPLAY WRK-MSGERRO.                                        00053034
+  .         DISPLAY WRK-MSGCODIGO WRK-CODIGOERRO.                       00053134
+  .         DISPLAY WRK-MSGCHAVE1 LNK-CHAVE.                            00053234
+  .         DISPLAY WRK-MSGCHAVE2 LNK-CHAVE2.                           00053334
+  .                                                                     00053434
+RAFAL2 9000-99-FIM.              EXIT.                                  00053534
+      *-------------------------------------------------------------*   00053632
+       9100-TRATAERROS-SAIDA                        SECTION.            00053732
+      *-------------------------------------------------------------*   00053832
+            DISPLAY WRK-MSGERRO.                                        00054000
+            DISPLAY WRK-MSGCODIGO WRK-CODIGOERRO.                       00055000
+            DISPLAY WRK-MSGSEPARA.                                      00056000
+            GOBACK.                                                     00057000
+                                                                        00058000
+       9000-99-FIM.              EXIT.                                  00059000
