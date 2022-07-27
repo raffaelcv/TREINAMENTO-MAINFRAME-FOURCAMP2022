@@ -1,0 +1,22 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*-------------------------------------------------------
+//*01-20=NOME  21-04=DEPTO   25=(C)CLT/(E)ESTAGIO
+//*-------------------------------------------------------
+//SORTIN   DD   *
+RAFAEL VIANA        XXXXC
+LEONARDO SOUZA      XXXXE
+VICTOR LEAL         XXXXC
+PITER  FANTI        XXXXE
+JOEI LORENTI        XXXXC
+//SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  SORT FIELDS=(01,20,CH,A)
+  OUTREC IFTHEN=(WHEN=(25,01,CH,EQ,C'C'),OVERLAY=(21:C'DPTI'))
+//STEP02   DD   PGM=SORT
+//SORTIN   DD   DSN=SORTOUT
+//SORTOUT2 DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  OUTREC IFTHEN=(WHEN=(25,01,CH,EQ,C'E'),OVERLAY=(21:C'DPTI'))

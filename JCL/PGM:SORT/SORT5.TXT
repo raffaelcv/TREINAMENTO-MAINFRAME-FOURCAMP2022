@@ -1,0 +1,17 @@
+//IVANEXEC JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*-------------------------------------------------------
+//*01-20=NOME  21-04=DEPTO   25=(C)CLT/(E)ESTAGIO
+//*-------------------------------------------------------
+//SORTIN   DD   *
+RAFAEL VIANA        DPTIC
+LEONARDO SOUZA      DPESE
+VICTOR LEAL         DPTIC
+PITER  FANTI        DPESE
+JOEI LORENTI        DPTIC
+//SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  SORT FIELDS=(01,20,CH,A)
+  OUTREC OVERLAY=(20:C'-')
+

@@ -1,0 +1,15 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*------------------------------------------------------------------
+//*01-48=AEROPORTO 49-74=COMPANHIA  75-104=ACHADOS  105-109=VALOR
+//*------------------------------------------------------------------
+//SORTIN   DD   DSN=GR.FOUR019.BASE1907,DISP=SHR
+//SORTOUT  DD   SYSOUT=*
+//SAIDA1   DD   SYSOUT=*
+//SAIDA2   DD   SYSOUT=*
+//SAIDA3   DD   SYSOUT=*
+//SAIDA4   DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  SORT FIELDS=COPY
+  OUTFIL FNAMES=(SAIDA1,SAIDA2,SAIDA3,SAIDA4),SPLITBY=15

@@ -1,0 +1,16 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID              00010000
+//STEP01   EXEC PGM=SORT                                                00020000
+//SORTIN   DD   DSN=GR.FOUR019.MASSASRT,DISP=SHR                        00030000
+//SORTOUT  DD   SYSOUT=*                                                00040000
+//SYSOUT   DD   SYSOUT=*                                                00050000
+//*-- SORT SIMPLES  1 CHAVE SORT FIELDS=(01,04,CH,A)                    00060000
+//*-- SORT COMPOSTO 2 CHAVE SORT FIELDS=(01,04,CH,A,10,20,CH,A)         00070000
+//*-- SORT COMPOSTO 2 CHAVE SORT FIELDS=(01,04,A,10,20,A),FORMAT=CH     00080000
+//*-- SORT FIELDS=(01,04,CH,A)                                          00081000
+//*-- SUM  FIELDS=(34,08,ZD) CH , ZD , PD , BI                          00082000
+//* OUTREC FIELDS=(01:C'AGENCIA ',01,04,14:C'CONTA ',05,05,26:C'SALDO ',00082108
+//*                          34,08,41:C'DATA ',DATE4)                   00082208
+//SYSIN    DD  *                                                        00083000
+  SORT FIELDS=COPY                                                      00084000
+  OUTREC FIELDS=(C'AGENCIA ',01,04,X,C'CONTA ',05,05,X,C'SALDO ',       00085009
+                             34,08,X,C'DATA ',DATE4)                    00086009

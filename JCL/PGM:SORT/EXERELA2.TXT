@@ -1,0 +1,28 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*------------------------------------------------------------------
+//*01-48=AEROPORT  49-74=COMPANHIA  75-104=ACHADOS  105-109=VALOR
+//*------------------------------------------------------------------
+//*---------------INREC APOS ESPACOS---------------------------------
+//*01-41=COMPANHIA             42-46=VALOR
+//*------------------------------------------------------------------
+//SORTIN   DD   DSN=GR.FOUR019.BASE1907,DISP=SHR
+//*SORTOUT  DD   DSN=GR.FOUR019.BASE1807,DISP=SHR
+//SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  INREC FIELDS=(49,25,16X,105,05,16X)
+  SORT FIELDS=(46,10,CH,A)
+  INCLUDE COND=(49,25,CH,EQ,C'ALASKA AIRLINES')
+   OUTFIL FNAMES=SORTOUT,LINES=30,
+   HEADER1=(01:'*-------------------------------------------------------
+            ------*',/,01:'*',
+    16:'C O M P A N H I A S  A E R E A S',62:'*',/,
+            01:'*-------------------------------------------------------
+            ------*',/,47:'DATA:',DATE=(DM4-),4/),
+   HEADER2=(2/,18:'RELATORIO DE VALORES    ',53:'PG:',PAGE,
+            4/,01:'COMPANHIA',42:'VALOR',/),
+   OUTREC=(01,62),
+   TRAILER1=(2/,23:'SOMA TOTAL :',TOT=(42,05,ZD,EDIT=(TTTTTTTT))),
+  TRAILER2=(/,31:'SOMA TOTAL DA PAG:',TOT=(42,05,ZD,EDIT=(TTTTTTTT)),/,
+              31:'MAX DA PAG.......:',MAX=(42,05,ZD,EDIT=(TTTTTTTT)))

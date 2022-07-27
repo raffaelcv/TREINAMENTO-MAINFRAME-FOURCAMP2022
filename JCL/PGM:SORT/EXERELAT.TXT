@@ -1,0 +1,29 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*------------------------------------------------------------------
+//*01-30=NOME      31-37=ID         38-45=SALARIO   46-55=CARGO
+//*------------------------------------------------------------------
+//*---------------INREC APOS ESPACOS---------------------------------
+//*01-31=NOME      32-38=ID         41-48=SALARIO   51-60=CARGO
+//*------------------------------------------------------------------
+//SORTIN   DD   DSN=GR.FOUR019.BASE1807,DISP=SHR
+//*SORTOUT  DD   DSN=GR.FOUR019.BASE1807,DISP=SHR
+//SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  INREC FIELDS=(01,30,1X,31,07,02X,38,08,02X,46,10,02X)
+  SORT FIELDS=(46,10,CH,A)
+   OUTFIL FNAMES=SORTOUT,LINES=20,
+   HEADER1=(01:'*-------------------------------------------------------
+            ------*',/,01:'*',
+    17:'B A N C O    F O U R C A M P ',62:'*',/,
+            01:'*-------------------------------------------------------
+            ------*',/,47:'DATA:',DATE=(DM4-),4/),
+   HEADER2=(2/,18:'RELATORIO DE FUNCINARIOS',53:'PG:',PAGE,
+            4/,01:'NOME',32:'CHAVE',41:'SALARIO',51:'SETOR',/),
+   OUTREC=(01,62),
+   TRAILER1=(2/,23:'MEDIA TOTAL:',AVG=(41,08,ZD,EDIT=(TTTTTTTT))),
+   TRAILER2=(/,31:'SOMA...',TOT=(41,08,ZD,EDIT=(TTTTTTTT)),/,
+               31:'MAX....',MAX=(41,08,ZD,EDIT=(TTTTTTTT)),/,
+               31:'MIN....',MIN=(41,08,ZD,EDIT=(TTTTTTTT)),/,
+               31:'AVG....',AVG=(41,08,ZD))

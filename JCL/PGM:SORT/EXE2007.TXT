@@ -1,0 +1,28 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*------------------------------------------------------------------
+//* 1-25=NOME      26-32=ID
+//*------------------------------------------------------------------
+//SORTIN   DD   DSN=GR.FOUR019.TURMA2,DISP=SHR
+//SORTOUT  DD   DSN=&TEMP,DISP=(NEW,CATLG,DELETE),SPACE=(TRK,(1))
+//*SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  SORT FIELDS=(26,07,CH,A)
+//*-------------------------------------------------------
+//STEP02   EXEC PGM=SORT
+//SORTIN   DD   DSN=GR.IVAN.TURMA1,DISP=SHR
+//SORTOUT  DD   DSN=&TEMP1,DISP=(NEW,CATLG,DELETE),SPACE=(TRK,(1))
+//*SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  SORT FIELDS=(26,07,CH,A)
+//*-------------------------------------------------------
+//STEP03   EXEC PGM=SORT
+//SORTIN01 DD   DSN=&TEMP,DISP=SHR
+//SORTIN02 DD   DSN=&TEMP1,DISP=SHR
+//SORTOUT  DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//SYSIN    DD  *
+  MERGE FIELDS=(26,07,CH,A)
+//*-------------------------------------------------------

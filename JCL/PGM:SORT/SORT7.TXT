@@ -1,0 +1,26 @@
+//FOUR019X JOB 'EXE COB',CLASS=C,MSGCLASS=X,NOTIFY=&SYSUID
+//STEP01   EXEC PGM=SORT
+//*-------------------------------------------------------
+//*01-20=NOME  21-04=DEPTO   25=(C)CLT/(E)ESTAGIO
+//*-------------------------------------------------------
+//SORTIN   DD   *
+RAFAEL VIANA        DPTIC
+LEONARDO SOUZA      DPESE
+VICTOR LEAL         DPTIC
+PITER  FANTI        DPESE
+JOEI LORENTI        DPTIC
+JOANA FOOM          DPTIF
+//*-----------ARQUIVOS DE SAIDA---------------------
+//SORTOUT  DD   SYSOUT=*
+//CLT      DD   SYSOUT=*
+//ESTAG    DD   SYSOUT=*
+//EXCESSAO DD   SYSOUT=*
+//SYSOUT   DD   SYSOUT=*
+//*  INCLUDE COND=(25,01,CH,EQ,C'E')
+//SYSIN    DD  *
+  SORT FIELDS=(01,20,CH,A)
+   OUTFIL FNAMES=CLT,INCLUDE=(25,01,CH,EQ,C'C')
+   OUTFIL FNAMES=ESTAG,INCLUDE=(25,01,CH,EQ,C'E'),
+          BUILD=(1,20,C'--------------')
+   OUTFIL FNAMES=EXCESSAO,SAVE
+//*  POSSO JOGAR A EXCESSAO NA PROPRIA SORTOUT
